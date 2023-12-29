@@ -1,6 +1,7 @@
 package com.bootcamp.customerservice.webclient.impl;
 
 import com.bootcamp.customerservice.webclient.CreditServiceClient;
+import io.reactivex.rxjava3.core.Single;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class CreditServiceClientImpl implements CreditServiceClient {
     @Override
     public Mono<Boolean> hasCreditCard(String customerId) {
         return creditServiceWebClient.get()
-                .uri("/exists/{customerId}", customerId)
+                .uri("/exists-creditcard/{customerId}", customerId)
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, clientResponse ->
                         Mono.error(new RuntimeException("Error checking credit card existence")))
