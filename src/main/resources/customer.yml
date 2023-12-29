@@ -1,0 +1,132 @@
+openapi: 3.0.0
+info:
+  title: Customer API
+  version: 1.0.0
+  description: API for managing customers in a banking system.
+
+servers:
+  - url: https://localhost:8091
+    description: Local development server
+
+tags:
+  - name: Customers
+    description: API for customers
+
+paths:
+  /customers:
+    post:
+      summary: Create a new customer
+      operationId: createCustomer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerDTO'
+      responses:
+        '201':
+          description: Customer created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+        '400':
+          description: Invalid customer data
+    get:
+      summary: List all customers
+      operationId: listCustomers
+      responses:
+        '200':
+          description: List of all customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerDTO'
+        '500':
+          description: Internal Server Error
+
+  /customers/{customerId}:
+    get:
+      summary: Get a customer by ID
+      operationId: getCustomerById
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Customer details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+        '404':
+          description: Customer not found
+
+    put:
+      summary: Update a customer
+      operationId: updateCustomer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerDTO'
+      responses:
+        '200':
+          description: Customer updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+        '400':
+          description: Invalid customer data
+        '404':
+          description: Customer not found
+
+    delete:
+      summary: Delete a customer
+      operationId: deleteCustomer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Customer deleted successfully
+        '404':
+          description: Customer not found
+
+components:
+  schemas:
+    CustomerDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        type:
+          $ref: '#/components/schemas/CustomerType'
+
+    CustomerType:
+      type: string
+      enum:
+        - PERSONAL
+        - BUSINESS
+        - VIP
+        - PYME
